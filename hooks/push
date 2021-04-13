@@ -14,20 +14,8 @@ amend(){
 
 for arch in $ARCHITECTURES
 do
-  echo
-  echo %%
-  echo %% PUSHING FOR ARCHITECTURE = "$arch" =
-  echo %%
-  echo
-
-  echo docker push "$IMAGE_NAME-$arch"
+  docker push "$IMAGE_NAME-$arch"
 done
 
-echo
-echo %%
-echo %% PUSH MULTIARCHITECTURE MANIFEST
-echo %%
-echo
-
-echo docker manifest create "$IMAGE_NAME" "$(amend | tr "\n" " ")"
+docker manifest create "$IMAGE_NAME" "$(amend | tr "\n" " ")"
 

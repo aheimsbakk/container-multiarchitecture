@@ -1,7 +1,4 @@
 #!/bin/sh
 set -xe
 
-pwd
-ls
-
 ./build.sh "$DOCKERFILE_PATH" "$IMAGE_NAME"
