@@ -8,7 +8,7 @@ ARCHITECTURES="$(cat ./build.arch)"
 amend(){
   for arch in $ARCHITECTURES
   do
-    echo --ammend "$IMAGE_NAME"-"$arch"
+    echo --amend "$IMAGE_NAME"-"$arch"
   done
   echo
 }
@@ -19,5 +19,5 @@ do
   docker push "$IMAGE_NAME-$arch"
 done
 
-docker manifest create "$IMAGE_NAME" "$(amend | tr "\n" " ")"
+docker manifest create "$IMAGE_NAME" $(amend | tr "\n" " ")
 
