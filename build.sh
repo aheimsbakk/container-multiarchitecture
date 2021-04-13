@@ -38,11 +38,27 @@ get_dockerfile() {
 
 ### main
 
-ARCHITECTURES="amd64 arm64v8 arm32v7"
-tag="${1:-build:latest}"
+BASEDIR="$(dirname "$0")"
+ARCHITECTURES="$(cat "$BASEDIR"/build.arch)"
+DOCKERFILE_PATH="$1"
+IMAGE_NAME="$2"
 
-# allow multiarch
-sudo podman run --rm --privileged docker.io/multiarch/qemu-user-static --reset
+# print help
+if [ -z "$DOCKERFILE_PATH" ] || [ -z "$IMAGE_NAME" ]
+then
+  echo "$(basename "$0")" DOCKERFILE_PATH IMAGE_NAME
+  exit 1
+fi
+
+if which podman > /dev/null 2>&1
+then
+  DOCKER_CMD=podman
+else
+  DOCKER_CMD=docker
+fi
+
+# turn on multiarch for local build
+[ "$DOCKER_CMD" = "podman" ] && sudo hooks/pre_build
 
 # build for all architectures
 for arch in $ARCHITECTURES
@@ -53,9 +69,7 @@ do
   echo %%
   echo
 
-  get_dockerfile "$arch" "Dockerfile"  |
-    podman build --tag "$tag-$arch" --file -
-
-  #get_dockerfile "$arch" "Dockerfile" | cat
+  get_dockerfile "$arch" "$DOCKERFILE_PATH/Dockerfile"  |
+    $DOCKER_CMD build --tag "$IMAGE_NAME-$arch" --file -
 done
 
