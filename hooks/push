@@ -1,6 +1,8 @@
 #!/bin/sh
 set -xe
 
+export DOCKER_CLI_EXPERIMENTAL=enabled
+
 ARCHITECTURES="$(cat ./build.arch)"
 
 amend(){
