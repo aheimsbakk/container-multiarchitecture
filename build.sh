@@ -72,6 +72,6 @@ do
   dockerfile=$(get_dockerfile "$arch" "$DOCKERFILE_PATH")
   cd "$(dirname "$DOCKERFILE_PATH")" || return
   echo "$dockerfile" |
-    $DOCKER_CMD build --tag "$IMAGE_NAME-$arch" --file -
+    $DOCKER_CMD build --tag "$IMAGE_NAME-$arch" -
 done
 
