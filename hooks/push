@@ -1,8 +1,10 @@
 #!/bin/sh
 set -xe
 
+# enable experimental cli to use manifest command
 export DOCKER_CLI_EXPERIMENTAL=enabled
 
+# include all architectures we build for
 ARCHITECTURES="$(cat ./build.arch)"
 
 amend(){
@@ -20,4 +22,5 @@ do
 done
 
 docker manifest create "$IMAGE_NAME" $(amend | tr "\n" " ")
+docker push "$IMAGE_NAME"
 
