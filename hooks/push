@@ -22,5 +22,5 @@ do
 done
 
 docker manifest create "$IMAGE_NAME" $(amend | tr "\n" " ")
-docker push "$IMAGE_NAME"
+docker manifest push "$IMAGE_NAME"
 
