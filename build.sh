@@ -70,8 +70,10 @@ do
   echo
 
   dockerfile=$(get_dockerfile "$arch" "$DOCKERFILE_PATH")
+  plattform="$(echo "$arch" | sed -E 's#(.*)(v.*)#\1/\2#g' | sed -E 's#(.*)#linux/\1#')"
   cd "$(dirname "$DOCKERFILE_PATH")" || return
   echo "$dockerfile" |
-    $DOCKER_CMD build --tag "$IMAGE_NAME-$arch" -
+    $DOCKER_CMD build --tag "$IMAGE_NAME-$arch" --platform "$plattform" -
+    #$DOCKER_CMD build --tag "$IMAGE_NAME-$arch" -
 done
 
