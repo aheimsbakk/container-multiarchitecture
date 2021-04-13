@@ -1,6 +1,7 @@
 #!/bin/sh
+set -xe
 
-ARCHITECTURES="$(cat ../build.arch)"
+ARCHITECTURES="$(cat build.arch)"
 IMAGE_NAME=t:latest
 
 amend(){
