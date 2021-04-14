@@ -12,6 +12,17 @@ get_arch2arch() {
   esac
 }
 
+get_arch2docker() {
+  arch="$1"
+
+  case "$arch" in
+    amd64) echo amd64 ;;
+    arm64/v8) echo arm64v8 ;;
+    arm/v7) echo arm32v7 ;;
+    *) exit 1;;
+  esac
+}
+
 # get qemu container for architecture
 get_multiarch_qemu_container() {
   arch="$(get_arch2arch "$1")"
@@ -27,7 +38,9 @@ get_dockerfile() {
 
   if [ "$arch" != "amd64" ]
   then
-    sed -E "s#^(FROM) (.*)/#\1 --platform=linux/$arch \2/#g" "$dockerfile" |
+    # FIXME when docker start supporting the --platform arg in a proper way uncomment this
+    #sed -E "s#^(FROM) (.*)/#\1 --platform=linux/$arch \2/#g" "$dockerfile" |
+    sed -E "s#docker.io/#docker.io/$(get_arch2docker "$arch")/#g" "$dockerfile" |
       sed "/^FROM /a COPY --from=qemu /usr/bin/qemu-$(get_arch2arch "$arch")-static /usr/bin" |
       sed "0,/FROM /!b;//i $(get_multiarch_qemu_container "$arch")\n"
   else
@@ -71,11 +84,6 @@ do
   dockerfile=$(get_dockerfile "$arch" "$DOCKERFILE_PATH")
   cd "$(dirname "$DOCKERFILE_PATH")" || return
   echo "$dockerfile" |
-    if [ "$DOCKER_CMD" = docker ]
-    then
-      $DOCKER_CMD build --tag "$IMAGE_NAME-$(echo "$arch" | sed 's#/##')" --platform="linux/$arch" -
-    else
-      $DOCKER_CMD build --tag "$IMAGE_NAME-$(echo "$arch" | sed 's#/##')" --platform="linux/$arch" -
-    fi
+    $DOCKER_CMD build --tag "$IMAGE_NAME-$(echo "$arch" | sed 's#/##')" --platform="linux/$arch" -
 done
 
