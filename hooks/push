@@ -10,7 +10,7 @@ ARCHITECTURES="$(cat ./build.arch)"
 amend(){
   for arch in $ARCHITECTURES
   do
-    echo --amend "$IMAGE_NAME"-"$arch"
+    echo --amend "$IMAGE_NAME"-"$(echo $arch | sed 's#/##')"
   done
   echo
 }
