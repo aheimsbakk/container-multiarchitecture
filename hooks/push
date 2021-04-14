@@ -29,9 +29,9 @@ do
   then
     a=$(cut -d/ -f1)
     v=$(cut -d/ -f2)
-    docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$(echo $arch | sed 's#/##')" -os linux --arch "$a" --variant "$v"
+    docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$(echo $arch | sed 's#/##')" --os linux --arch "$a" --variant "$v"
   else
-    docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$arch" -os linux --arch "$arch"
+    docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$arch" --os linux --arch "$arch"
   fi
 done
 
