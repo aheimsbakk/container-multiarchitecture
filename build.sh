@@ -68,10 +68,9 @@ do
   echo %%
   echo
 
-  #platform="$(echo "$arch" | sed -E 's#(.*)(v.*)#\1/\2#g' | sed -E 's#(.*)#linux/\1#')"
   dockerfile=$(get_dockerfile "$arch" "$DOCKERFILE_PATH")
   cd "$(dirname "$DOCKERFILE_PATH")" || return
   echo "$dockerfile" |
-    $DOCKER_CMD build --tag "$(echo $IMAGE_NAME-$arch | sed 's#/##g')" --platform="linux/$arch" -
+    $DOCKER_CMD build --tag "$IMAGE_NAME-$(echo $arch | sed 's#/##g')" --platform="linux/$arch" -
 done
 

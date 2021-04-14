@@ -18,9 +18,22 @@ amend(){
 
 for arch in $ARCHITECTURES
 do
-  docker push "$IMAGE_NAME-$arch"
+  docker push "$IMAGE_NAME-$(echo $arch | sed 's#/##')"
 done
 
 docker manifest create "$IMAGE_NAME" $(amend | tr "\n" " ")
+
+for arch in $ARCHITECTURES
+do
+  if echo "$arch" | grep -q /
+  then
+    a=$(cut -d/ -f1)
+    v=$(cut -d/ -f2)
+    docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$(echo $arch | sed 's#/##')" -os linux --arch "$a" --variant "$v"
+  else
+    docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$arch" -os linux --arch "$arch"
+  fi
+done
+
 docker manifest push "$IMAGE_NAME"
 
