@@ -14,6 +14,7 @@ get_arch2arch() {
     amd64) echo amd64 ;;
     arm64/v8) echo aarch64 ;;
     arm/v7) echo arm ;;
+    arm/v6) echo arm ;;
     *) exit 1;;
   esac
 }
