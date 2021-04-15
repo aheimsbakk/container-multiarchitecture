@@ -7,29 +7,25 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 # include all architectures we build for
 ARCHITECTURES="$(cat ./build.arch)"
 
-amend(){
+get_short_arch() {
+  arch="$1"
+  echo "$arch" | sed 's#/##'
+}
+
+get_amend(){
   for arch in $ARCHITECTURES
   do
-    echo --amend "$IMAGE_NAME"-"$(echo "$arch" | sed 's#/##')"
+    echo --amend "$IMAGE_NAME"-"$(get_short_arch "$arch")"
   done
   echo
 }
 
-
 for arch in $ARCHITECTURES
 do
-  if echo "$arch" | grep -q /
-  then
-    a=$(echo "$arch" | cut -d/ -f1)
-    v=$(echo "$arch" | cut -d/ -f2)
-    docker manifest annotate "$IMAGE_NAME-$(echo "$arch" | sed 's#/##')" "$IMAGE_NAME-$(echo "$arch" | sed 's#/##')" --os linux --arch "$a" --variant "$v"
-  else
-    docker manifest annotate "$IMAGE_NAME-$arch" "$IMAGE_NAME-$arch" --os linux --arch "$arch"
-  fi
-  docker push "$IMAGE_NAME-$(echo "$arch" | sed 's#/##')"
+  docker push "$IMAGE_NAME-$(get_short_arch "$arch")"
 done
 
-docker manifest create "$IMAGE_NAME" $(amend | tr "\n" " ")
+docker manifest create "$IMAGE_NAME" $(get_amend | tr "\n" " ")
 
 for arch in $ARCHITECTURES
 do
@@ -37,7 +33,7 @@ do
   then
     a=$(echo "$arch" | cut -d/ -f1)
     v=$(echo "$arch" | cut -d/ -f2)
-    docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$(echo "$arch" | sed 's#/##')" --os linux --arch "$a" --variant "$v"
+    docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$(get_short_arch "$arch")" --os linux --arch "$a" --variant "$v"
   else
     docker manifest annotate "$IMAGE_NAME" "$IMAGE_NAME-$arch" --os linux --arch "$arch"
   fi
