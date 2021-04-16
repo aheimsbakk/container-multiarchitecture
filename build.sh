@@ -81,10 +81,10 @@ do
   cd "$(dirname "$DOCKERFILE_PATH")" || return
   [ "$DOCKER_CMD" = "podman" ] &&
     echo "$dockerfile" |
-      $DOCKER_CMD build --tag "$IMAGE_NAME-$(get_short_arch "$arch")" --platform="linux/$arch" -
+      $DOCKER_CMD build --tag "$IMAGE_NAME-$(get_short_arch "$arch")" --platform="linux/$arch" --file - .
 
   [ "$DOCKER_CMD" = "docker" ] &&
     echo "$dockerfile" |
-      $DOCKER_CMD buildx build --tag "$IMAGE_NAME-$(get_short_arch "$arch")" --platform="linux/$arch" -
+      $DOCKER_CMD buildx build --tag "$IMAGE_NAME-$(get_short_arch "$arch")" --platform="linux/$arch" --file - .
 done
 
