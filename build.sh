@@ -84,7 +84,6 @@ do
 
   dockerfile=$(get_dockerfile "$arch" "$DOCKERFILE_PATH")
 
-  cd "$(dirname "$DOCKERFILE_PATH")" || return
   if [ "$DOCKER_CMD" = "podman" ]
   then
     echo "$dockerfile" |
